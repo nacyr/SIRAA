@@ -8,18 +8,16 @@ class DataPreprocessor:
 
     def remove_duplicates(self, df):
         """Remove exact duplicate records."""
-
-        df = df.drop_duplicates()
-
-        return df
+        return df.drop_duplicates().copy()
 
     def handle_missing_values(self, df):
-        """Handle missing values in selected columns."""
+        """Handle missing values in important columns."""
 
-        # report_text is required for the ML task
-        df = df.dropna(subset=["report_text"])
+        # report_text is required for the ML task.
+        # There is no reliable way to reconstruct a missing report.
+        df = df.dropna(subset=["report_text"]).copy()
 
-        # Keep useful records even when these fields are missing
+        # Keep useful records when these fields are missing.
         df["location"] = df["location"].fillna("Unknown")
         df["reported_by"] = df["reported_by"].fillna("Unknown")
 
@@ -28,10 +26,10 @@ class DataPreprocessor:
     def clean_report_text(self, df):
         """Clean and standardize incident report text."""
 
-        # Remove leading and trailing spaces
+        # Remove unnecessary spaces.
         df["report_text"] = df["report_text"].str.strip()
 
-        # Correct known spelling errors
+        # Correct known spelling errors discovered during investigation.
         corrections = {
             "maintainance": "maintenance",
             "triggred": "triggered",
@@ -48,7 +46,7 @@ class DataPreprocessor:
                 regex=False
             )
 
-        # Standardize capitalization
+        # Standardize capitalization.
         df["report_text"] = (
             df["report_text"]
             .str.lower()
@@ -65,9 +63,7 @@ class DataPreprocessor:
             "PlatformA": "Platform A"
         }
 
-        df["location"] = df["location"].replace(
-            location_mapping
-        )
+        df["location"] = df["location"].replace(location_mapping)
 
         return df
 
@@ -131,17 +127,11 @@ class DataPreprocessor:
         """
 
         df = self.remove_duplicates(df)
-
         df = self.handle_missing_values(df)
-
         df = self.clean_report_text(df)
-
         df = self.clean_location(df)
-
         df = self.clean_department(df)
-
         df = self.clean_severity(df)
-
         df = self.clean_date(df)
 
         return df

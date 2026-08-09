@@ -1,5 +1,3 @@
-import pandas as pd
-
 from src.data_loader import DataLoader
 from src.preprocessing import DataPreprocessor
 
@@ -63,19 +61,25 @@ def main():
     print("=" * 60)
 
     if missing_values == 0:
-        print("✓ No missing values")
+        print("[OK] No missing values")
+    else:
+        print("[WARNING] Missing values found")
 
     if duplicate_rows == 0:
-        print("✓ No duplicate rows")
+        print("[OK] No duplicate rows")
+    else:
+        print("[WARNING] Duplicate rows found")
 
     if duplicate_ids == 0:
-        print("✓ No duplicate incident IDs")
+        print("[OK] No duplicate incident IDs")
+    else:
+        print("[WARNING] Duplicate incident IDs found")
 
     print("\n" + "=" * 60)
     print("OUTPUT")
     print("=" * 60)
 
-    print(f"Clean dataset saved to:")
+    print("Clean dataset saved to:")
     print(OUTPUT_FILE)
 
     print("\nPreprocessing completed successfully.")
